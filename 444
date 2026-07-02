@@ -1,0 +1,117 @@
+universe(> );
+CREATE TABLE
+universe=> 
+universe=> -- 4. STAR TABLE
+universe=> CREATE TABLE star (
+universe(>     star_id SERIAL PRIMARY KEY,
+universe(>     name VARCHAR(100) NOT NULL UNIQUE,
+universe(>     star_type TEXT NOT NULL,
+universe(>     age_in_millions_of_years INT,
+universe(>     luminosity NUMERIC,
+universe(>     has_planets BOOLEAN NOT NULL,
+universe(>     galaxy_id INT REFERENCES galaxy(galaxy_id)
+universe(> );
+CREATE TABLE
+universe=> 
+universe=> -- 5. PLANET TABLE
+universe=> CREATE TABLE planet (
+universe(>     planet_id SERIAL PRIMARY KEY,
+universe(>     name VARCHAR(100) NOT NULL UNIQUE,
+universe(>     planet_type TEXT NOT NULL,
+universe(>     has_life BOOLEAN NOT NULL,
+universe(>     orbital_period_in_days INT,
+universe(>     distance_from_star NUMERIC,
+universe(>     star_id INT REFERENCES star(star_id)
+universe(> );
+CREATE TABLE
+universe=> 
+universe=> -- 6. MOON TABLE
+universe=> CREATE TABLE moon (
+universe(>     moon_id SERIAL PRIMARY KEY,
+universe(>     name VARCHAR(100) NOT NULL UNIQUE,
+universe(>     is_spherical BOOLEAN NOT NULL,
+universe(>     distance_from_planet NUMERIC,
+universe(>     orbital_period_in_days INT,
+universe(>     planet_id INT REFERENCES planet(planet_id)
+universe(> );
+CREATE TABLE
+universe=> 
+universe=> -- 7. COMET TABLE (5aad table)
+universe=> CREATE TABLE comet (
+universe(>     comet_id SERIAL PRIMARY KEY,
+universe(>     name VARCHAR(100) NOT NULL UNIQUE,
+universe(>     orbital_period_in_years NUMERIC,
+universe(>     is_periodic BOOLEAN NOT NULL,
+universe(>     last_seen_year INT
+universe(> );
+CREATE TABLE
+universe=> -- GALAXIES (6 rows)
+universe=> INSERT INTO galaxy (name, galaxy_type, distance_from_earth, age_in_millions_of_years, has_black_hole) VALUES
+universe-> ('Milky Way', 'Spiral', 0, 13600, TRUE),
+universe-> ('Andromeda', 'Spiral', 2537000, 10100, TRUE),
+universe-> ('Triangulum', 'Spiral', 3000000, 11000, FALSE),
+universe-> ('Whirlpool', 'Spiral', 23000000, 400, TRUE),
+universe-> ('Sombrero', 'Elliptical', 29350000, 13250, TRUE),
+universe-> ('Centaurus A', 'Elliptical', 13000000, 13270, TRUE);
+INSERT 0 6
+universe=> 
+universe=> -- STARS (6 rows)
+universe=> INSERT INTO star (name, star_type, age_in_millions_of_years, luminosity, has_planets, galaxy_id) VALUES
+universe-> ('Sun', 'G-type', 4600, 1.00, TRUE, 1),
+universe-> ('Sirius', 'A-type', 230, 25.40, TRUE, 1),
+universe-> ('Betelgeuse', 'M-type', 8, 100000.00, FALSE, 1),
+universe-> ('Proxima Centauri', 'M-type', 4850, 0.0017, TRUE, 1),
+universe-> ('Alpha Centauri A', 'G-type', 5300, 1.519, TRUE, 1),
+universe-> ('Vega', 'A-type', 455, 40.12, FALSE, 2);
+INSERT 0 6
+universe=> 
+universe=> -- PLANETS (12 rows)
+universe=> INSERT INTO planet (name, planet_type, has_life, orbital_period_in_days, distance_from_star, star_id) VALUES
+universe-> ('Mercury', 'Terrestrial', FALSE, 88, 0.39, 1),
+universe-> ('Venus', 'Terrestrial', FALSE, 225, 0.72, 1),
+universe-> ('Earth', 'Terrestrial', TRUE, 365, 1.00, 1),
+universe-> ('Mars', 'Terrestrial', FALSE, 687, 1.52, 1),
+universe-> ('Jupiter', 'Gas Giant', FALSE, 4333, 5.20, 1),
+universe-> ('Saturn', 'Gas Giant', FALSE, 10759, 9.58, 1),
+universe-> ('Uranus', 'Ice Giant', FALSE, 30687, 19.20, 1),
+universe-> ('Neptune', 'Ice Giant', FALSE, 60190, 30.10, 1),
+universe-> ('Proxima b', 'Terrestrial', FALSE, 11, 0.05, 4),
+universe-> ('Alpha Cb', 'Terrestrial', FALSE, 200, 1.10, 5),
+universe-> ('Sirius c', 'Gas Giant', FALSE, 900, 3.50, 2),
+universe-> ('Sirius d', 'Terrestrial', FALSE, 400, 1.80, 2);
+INSERT 0 12
+universe=> 
+universe=> -- MOONS (20 rows)
+universe=> INSERT INTO moon (name, is_spherical, distance_from_planet, orbital_period_in_days, planet_id) VALUES
+universe-> ('Moon', TRUE, 384400, 27, 3),
+universe-> ('Phobos', FALSE, 9378, 0, 4),
+universe-> ('Deimos', FALSE, 23459, 1, 4),
+universe-> ('Io', TRUE, 421800, 2, 5),
+universe-> ('Europa', TRUE, 671100, 4, 5),
+universe-> ('Ganymede', TRUE, 1070400, 7, 5),
+universe-> ('Callisto', TRUE, 1882700, 17, 5),
+universe-> ('Titan', TRUE, 1221870, 16, 6),
+universe-> ('Enceladus', TRUE, 238020, 1, 6),
+universe-> ('Mimas', TRUE, 185539, 1, 6),
+universe-> ('Tethys', TRUE, 294619, 2, 6),
+universe-> ('Dione', TRUE, 377396, 3, 6),
+universe-> ('Rhea', TRUE, 527108, 5, 6),
+universe-> ('Iapetus', TRUE, 3560820, 79, 6),
+universe-> ('Miranda', TRUE, 129900, 1, 7),
+universe-> ('Ariel', TRUE, 190900, 3, 7),
+universe-> ('Umbriel', TRUE, 266000, 4, 7),
+universe-> ('Titania', TRUE, 436300, 9, 7),
+universe-> ('Oberon', TRUE, 583500, 13, 7),
+universe-> ('Triton', TRUE, 354759, 6, 8);
+INSERT 0 20
+universe=> 
+universe=> -- COMETS (5 rows)
+universe=> INSERT INTO comet (name, orbital_period_in_years, is_periodic, last_seen_year) VALUES
+universe-> ('Halley', 75.3, TRUE, 1986),
+universe-> ('Hale-Bopp', 2520.0, TRUE, 1997),
+universe-> ('Encke', 3.3, TRUE, 2023),
+universe-> ('Shoemaker-Levy 9', 0, FALSE, 1994),
+universe-> ('McNaught', 92600.0, FALSE, 2007);
+INSERT 0 5
+universe=> pg_dump -cC --inserts -U freecodecamp universe > universe.sql
+universe-> pg_
